@@ -17,11 +17,11 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", require("./routes/auth.routes"));
-app.use("/api/organizations", require("./routes/organization.routes"));
-app.use("/api/projects", require("./routes/project.routes"));
-app.use("/api/threads", require("./routes/thread.routes"));
-app.use("/api/messages", require("./routes/message.routes"));
+app.use("/api/auth", require("./router/auth.routes"));
+// app.use("/api/organizations", require("./routes/organization.routes"));
+app.use("/api/projects", require("./router/project.routes"));
+app.use("/api/threads", require("./router/thread.routes"));
+app.use("/api/messages", require("./router/message.routes"));
 
 // Health check
 app.get("/", (req, res) => {

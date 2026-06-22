@@ -21,7 +21,7 @@ const createProject = async (req,res) =>{
         return res.status(500).json({error:err});
     }
 }
-const getAllProducts = async (req,res) =>{
+const getAllProjects = async (req,res) =>{
     try {
         const projects = await Project.find({ members: req.user._id });
         if(!projects){
@@ -34,7 +34,7 @@ const getAllProducts = async (req,res) =>{
         return res.status(500).json({error:err})
     }
 }
-const getProductById = async (req,res) =>{
+const getProjectById = async (req,res) =>{
     try {
         const {id} = req.params;
         const result = await Project.findById(id);
@@ -65,7 +65,7 @@ const updateProject = async (req,res) =>{
        return res.status(500).json({error:err});
     }
 }
-const removeProduct = async (req,res) =>{
+const removeProject = async (req,res) =>{
     const {id} = req.params;
     const project = await Project.findByIdAndDelete(id);
     if(!project){
