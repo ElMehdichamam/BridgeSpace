@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const registerController = async (req,res) =>{
     try {
-    const {username,email, role, department, organization,password} = req.body;
+    const { username,email, role, department, organization,password } = req.body;
     const isExsiting = await User.findOne({email});
     if(isExsiting){
         return res.status(400).json({
@@ -26,9 +26,9 @@ const registerController = async (req,res) =>{
         token
     });
     } catch (err) {
-        return res.status(400).json({
+        return res.status(500).json({
             errorMessage:err
-        })
+        });
     }
 }
 
