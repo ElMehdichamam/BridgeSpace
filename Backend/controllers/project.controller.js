@@ -18,7 +18,7 @@ const createProject = async (req,res) =>{
         });
 
     } catch (err) {
-        return res.status(500).json({error:err});
+        return res.status(500).json({ error: err.message })
     }
 }
 const getAllProjects = async (req,res) =>{
@@ -39,7 +39,7 @@ const getProjectById = async (req,res) =>{
         const {id} = req.params;
         const result = await Project.findById(id);
         if(!result){
-            res.status(400).json({
+           return res.status(400).json({
                 message:"Project Not Found"
             });
         }
@@ -79,4 +79,36 @@ const removeProject = async (req,res) =>{
     });
 }
 
-module.exports = { createProject, getAllProjects, getProjectById, updateProject, removeProject }
+const addMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+    const project = await Project.findById(id);
+    if (!project) return res.status(404).json({ message: "Project Not Found" });
+    if (project.members.includes(userId)) {
+      return res.status(400).json({ message: "User Already a Member" });
+    }
+    project.members.push(userId);
+    await project.save();
+    return res.status(200).json({ message: "Member Added Successfully", project });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+const removeMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+    const project = await Project.findByIdAndUpdate(
+      id,
+      { $pull: { members: userId } },
+      { new: true }
+    );
+    if (!project) return res.status(404).json({ message: "Project Not Found" });
+    return res.status(200).json({ message: "Member Removed Successfully", project });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+module.exports = { createProject, getAllProjects, getProjectById, updateProject, removeProject, addMember, removeMember }
