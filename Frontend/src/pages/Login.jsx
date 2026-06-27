@@ -8,6 +8,10 @@ import {
   AlertCircle,
   Info,
 } from "lucide-react";
+import Nav from "../components/Nav";
+import { Link } from "react-router-dom";
+
+
 
 // ─── Toast Component ───────────────────────────────────────────────
 function Toast({ message, type, onRemove }) {
@@ -122,6 +126,7 @@ export default function LoginPage() {
 
   return (
     <>
+      <Nav/>
       <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
         {/* ── Left Branded Panel (lg+) ─────────────────────── */}
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 p-8 xl:p-12 flex-col justify-between text-white relative overflow-hidden">
@@ -163,10 +168,10 @@ export default function LoginPage() {
           <div className="mx-auto w-full max-w-md">
             {/* Heading */}
             <div className="mb-8 sm:mb-10">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+              <h2 className="text-2xl text-center sm:text-3xl font-bold text-gray-900 tracking-tight">
                 Welcome back
               </h2>
-              <p className="mt-2 text-sm sm:text-base text-gray-500">
+              <p className="mt-2 text-sm text-center sm:text-base text-gray-500">
                 Please enter your details to sign in.
               </p>
             </div>
@@ -231,12 +236,7 @@ export default function LoginPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 pt-1">
                 <p className="text-sm text-gray-500">
                   Don't have an account?{" "}
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                  >
-                    Register
-                  </a>
+                  <Link to="/register" className="font-medium text-blue-600 hover:text-blue-700 transition-colors" >Register</Link>
                 </p>
                 <a
                   href="#"
