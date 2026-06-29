@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
+import Thread from './pages/Thread';
+import Project from './pages/Project';
 
 
 function App() {
@@ -13,8 +15,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
     </>
-
-  )
+  );
 }
 
 export default App
