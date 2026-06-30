@@ -150,12 +150,12 @@ function Register() {
           </div>
 
           {/* Submit Button */}
-          <button 
-            type="submit" 
+          <Link 
+            to="/dashboard" 
             className="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition duration-200 ease-in-out transform hover:scale-[1.02] active:scale-95"
           >
             Register
-          </button>
+          </Link>
         </form>
 
         {/* Login Link - Placed outside the form to avoid triggering validation errors when clicked */}

@@ -1,100 +1,165 @@
-// Project.jsx
+import { CalendarDays, CheckCircle2, Clock3, GitBranch, Plus, UsersRound } from "lucide-react";
+import DashNav from "../components/DashNav";
+import SideBar from "../components/SideBar";
 
-// 1. Define MemberList FIRST (no export default here)
-const MemberList = ({ members = [] }) => {
-  if (!Array.isArray(members)) return null; 
+const projects = [
+  {
+    id: 1,
+    name: "BridgeSpace MVP",
+    description: "Core workspace, project threads, and GitHub progress visibility.",
+    status: "On Track",
+    deadline: "Oct 31, 2026",
+    progress: 74,
+    repo: "bridgespace/app",
+    accent: "bg-indigo-600",
+    members: [
+      { id: 1, name: "Elena Rodriguez", initials: "ER", role: "Design", color: "bg-rose-500" },
+      { id: 2, name: "Marcus Chen", initials: "MC", role: "Frontend", color: "bg-sky-500" },
+      { id: 3, name: "Sarah Jenkins", initials: "SJ", role: "Product", color: "bg-amber-500" },
+    ],
+  },
+  {
+    id: 2,
+    name: "Client Portal",
+    description: "External project updates, review requests, and shared deliverables.",
+    status: "Review",
+    deadline: "Nov 12, 2026",
+    progress: 58,
+    repo: "bridgespace/client-portal",
+    accent: "bg-emerald-600",
+    members: [
+      { id: 4, name: "Ava Patel", initials: "AP", role: "Backend", color: "bg-emerald-500" },
+      { id: 5, name: "Noah Kim", initials: "NK", role: "QA", color: "bg-violet-500" },
+    ],
+  },
+  {
+    id: 3,
+    name: "Analytics Refresh",
+    description: "Cleaner reporting panels for project health and team activity.",
+    status: "Planning",
+    deadline: "Dec 06, 2026",
+    progress: 32,
+    repo: "bridgespace/analytics",
+    accent: "bg-orange-500",
+    members: [
+      { id: 6, name: "Mina Lee", initials: "ML", role: "Data", color: "bg-orange-500" },
+      { id: 7, name: "Omar Haddad", initials: "OH", role: "PM", color: "bg-cyan-600" },
+    ],
+  },
+];
 
+function MemberStack({ members }) {
   return (
-    <div className="mt-2 rounded-xl bg-gray-50/50 border border-gray-100 p-1.5">
-      <ul className="space-y-1">
-        {members.map((member) => (
-          <li 
-            key={member.id || member.initials} 
-            className="flex items-center justify-between p-3 rounded-lg hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer group"
-          >
-            {/* Left Side: Avatar + Info */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="relative shrink-0">
-                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${member.gradient || 'from-gray-400 to-gray-500'} text-white flex items-center justify-center text-sm font-bold shadow-sm ring-2 ring-white`}>
-                  {member.initials}
-                </div>
-                {member.isOnline && (
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full"></span>
-                )}
-              </div>
-              
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-indigo-600 transition-colors">
-                  {member.name}
-                </p>
-                <p className="text-xs text-gray-400 truncate">
-                  {member.email || member.role}
-                </p>
-              </div>
-            </div>
-
-            {/* Right Side: Role Badge & Actions */}
-            <div className="flex items-center gap-2 shrink-0 ml-4">
-              <span className="hidden sm:inline-block text-[11px] font-semibold tracking-wide uppercase bg-gray-100 text-gray-500 px-2.5 py-1 rounded-md group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors">
-                {member.role}
-              </span>
-              
-              <button className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-100 transition-all">
-                <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className="flex items-center">
+      {members.map((member, index) => (
+        <div
+          key={member.id}
+          className={`${member.color} -ml-2 first:ml-0 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white shadow-sm`}
+          title={`${member.name} - ${member.role}`}
+          style={{ zIndex: members.length - index }}
+        >
+          {member.initials}
+        </div>
+      ))}
     </div>
   );
-};
+}
 
-
-// 2. Define ProjectCard SECOND
-const ProjectCard = () => {
-  const teamMembers = [
-    { id: 1, name: "Elena Rodriguez", initials: "ER", role: "Lead Designer", email: "elena@company.com", gradient: "from-pink-500 to-rose-500", isOnline: true },
-    { id: 2, name: "Marcus Chen", initials: "MC", role: "Frontend Dev", email: "marcus.c@company.com", gradient: "from-sky-400 to-indigo-500", isOnline: true },
-    { id: 3, name: "Sarah Jenkins", initials: "SJ", role: "PM", email: "s.jenkins@company.com", gradient: "from-amber-400 to-orange-500", isOnline: false },
-  ];
-
+function ProjectCard({ project }) {
   return (
-    <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-md w-full">
-        
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <p className="text-lg font-bold text-gray-900 leading-tight">Name Of the Project</p>
-          <span className="shrink-0 text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">
-            On Track
-          </span>
+    <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className={`h-2.5 w-2.5 rounded-full ${project.accent}`}></span>
+            <h2 className="truncate text-lg font-bold text-gray-950">{project.name}</h2>
+          </div>
+          <p className="mt-2 text-sm leading-6 text-gray-600">{project.description}</p>
         </div>
-
-        <p className="text-sm text-gray-500 leading-relaxed mb-4">
-          A brief description of the project scope and main deliverables for this quarter.
-        </p>
-
-        <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-6">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span>Deadline: Oct 31, 2023</span>
-        </div>
-
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Team Members</p>
-          <span className="text-xs text-indigo-500 font-medium cursor-pointer hover:text-indigo-700">+ Add</span>
-        </div>
-
-        {/* Since they are in the same file, React already knows what MemberList is! */}
-        <MemberList members={teamMembers} />
-
+        <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+          {project.status}
+        </span>
       </div>
-    </>
-  );
-};
 
-// 3. Export ONLY the main component at the very bottom
-export default ProjectCard;
+      <div className="mt-5">
+        <div className="mb-2 flex items-center justify-between text-xs font-medium text-gray-500">
+          <span>Progress</span>
+          <span>{project.progress}%</span>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+          <div className={`h-full rounded-full ${project.accent}`} style={{ width: `${project.progress}%` }}></div>
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 text-sm text-gray-600 sm:grid-cols-2">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="h-4 w-4 text-gray-400" />
+          {project.deadline}
+        </div>
+        <div className="flex items-center gap-2 truncate">
+          <GitBranch className="h-4 w-4 text-gray-400" />
+          <span className="truncate">{project.repo}</span>
+        </div>
+      </div>
+
+      <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4">
+        <MemberStack members={project.members} />
+        <button className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
+          Open
+        </button>
+      </div>
+    </article>
+  );
+}
+
+export default function Project() {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <SideBar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <DashNav title="Projects" subtitle="Track delivery, ownership, and repository activity" />
+        <main className="flex-1 p-4 sm:p-6">
+          <div className="mx-auto max-w-7xl space-y-6">
+            <section className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm sm:p-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">Project hub</p>
+                  <h1 className="mt-2 text-2xl font-black text-gray-950 sm:text-3xl">Organized workspaces for every build</h1>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+                    Keep project status, team ownership, deadlines, and GitHub progress in one focused view.
+                  </p>
+                </div>
+                <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-indigo-700">
+                  <Plus className="h-4 w-4" />
+                  New project
+                </button>
+              </div>
+            </section>
+
+            <section className="grid gap-4 sm:grid-cols-3">
+              {[
+                { label: "Active projects", value: "12", icon: CheckCircle2, tone: "text-emerald-600 bg-emerald-50" },
+                { label: "Team members", value: "38", icon: UsersRound, tone: "text-indigo-600 bg-indigo-50" },
+                { label: "Due this month", value: "5", icon: Clock3, tone: "text-orange-600 bg-orange-50" },
+              ].map((stat) => (
+                <div key={stat.label} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                  <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg ${stat.tone}`}>
+                    <stat.icon className="h-5 w-5" />
+                  </div>
+                  <p className="text-2xl font-black text-gray-950">{stat.value}</p>
+                  <p className="mt-1 text-sm text-gray-500">{stat.label}</p>
+                </div>
+              ))}
+            </section>
+
+            <section className="grid gap-5 lg:grid-cols-3">
+              {projects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}

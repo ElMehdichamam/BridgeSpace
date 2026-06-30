@@ -51,7 +51,7 @@ export default function Dashboard() {
   <div className="flex min-h-screen">
       <SideBar />
       <div className="flex flex-col flex-1">
-        <DashNav />
+        <DashNav title="Dashboard" subtitle="Overview of project health and workspace activity" />
         <main className="flex-1 p-6 bg-gray-50">
           <div className="w-full bg-gradient-to-b from-slate-50 to-white">
             {/* Inner Content Wrapper */}

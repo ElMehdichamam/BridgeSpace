@@ -1,34 +1,56 @@
 import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Bell, Menu, Plus, Search } from "lucide-react";
 
-export default function NavBar() {
+export default function NavBar({ title = "Dashboard", subtitle = "Manage your workspace" }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const mobileLinks = [
+    { name: "Dashboard", to: "/dashboard" },
+    { name: "Projects", to: "/projects" },
+    { name: "Threads", to: "/threads" },
+  ];
 
   return (
-    // Sticky container with a frosted glass effect
     <nav className="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between min-h-16 gap-4 py-3">
           
-          {/* Left Side: Hamburger Menu */}
-          <button 
-            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-            onClick={() => console.log("Hamburger clicked")} // Placeholder for later
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              onClick={() => setIsMenuOpen((open) => !open)}
+              aria-label="Toggle navigation"
+              aria-expanded={isMenuOpen}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div className="min-w-0">
+              <p className="text-lg font-bold text-gray-900 truncate">{title}</p>
+              <p className="hidden sm:block text-xs text-gray-500 truncate">{subtitle}</p>
+            </div>
+          </div>
 
-          {/* Right Side: Notifications & Profile */}
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex flex-1 max-w-md items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-500">
+            <Search className="h-4 w-4" />
+            <input
+              className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+              placeholder="Search projects, threads, or people"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/projects"
+              className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition"
+            >
+              <Plus className="w-4 h-4" />
+              New
+            </Link>
             
-            {/* Notification Bell */}
             <button className="relative p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-              </svg>
-              {/* Red Dot Indicator */}
-              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 text-white rounded-full border-2 border-white animate-pulse"></span>
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
             </button>
 
             {/* Divider */}
@@ -106,6 +128,28 @@ export default function NavBar() {
 
           </div>
         </div>
+        {isMenuOpen && (
+          <div className="border-t border-gray-100 py-3 lg:hidden">
+            <div className="grid gap-2">
+              {mobileLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.to}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                      isActive
+                        ? "bg-indigo-50 text-indigo-700"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    }`
+                  }
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
