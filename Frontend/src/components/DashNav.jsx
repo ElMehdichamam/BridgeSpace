@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Bell, Menu, Plus, Search } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Plus, Search, Settings, UserRound } from "lucide-react";
 
 export default function NavBar({ title = "Dashboard", subtitle = "Manage your workspace" }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -9,32 +9,33 @@ export default function NavBar({ title = "Dashboard", subtitle = "Manage your wo
     { name: "Dashboard", to: "/dashboard" },
     { name: "Projects", to: "/projects" },
     { name: "Threads", to: "/threads" },
+    { name: "Profile", to: "/profile" },
   ];
 
   return (
-    <nav className="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/85 shadow-sm backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between min-h-16 gap-4 py-3">
+        <div className="flex min-h-16 items-center justify-between gap-4 py-3">
           
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex min-w-0 items-center gap-3">
             <button
-              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-teal-500 lg:hidden"
               onClick={() => setIsMenuOpen((open) => !open)}
               aria-label="Toggle navigation"
               aria-expanded={isMenuOpen}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="h-6 w-6" />
             </button>
             <div className="min-w-0">
-              <p className="text-lg font-bold text-gray-900 truncate">{title}</p>
-              <p className="hidden sm:block text-xs text-gray-500 truncate">{subtitle}</p>
+              <p className="truncate text-lg font-black tracking-tight text-slate-950">{title}</p>
+              <p className="hidden truncate text-xs font-medium text-slate-500 sm:block">{subtitle}</p>
             </div>
           </div>
 
-          <div className="hidden md:flex flex-1 max-w-md items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-500">
+          <div className="hidden max-w-md flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-500 transition focus-within:border-teal-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-teal-100 md:flex">
             <Search className="h-4 w-4" />
             <input
-              className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+              className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
               placeholder="Search projects, threads, or people"
             />
           </div>
@@ -42,82 +43,62 @@ export default function NavBar({ title = "Dashboard", subtitle = "Manage your wo
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/projects"
-              className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition"
+              className="hidden items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-teal-700 sm:inline-flex"
             >
               <Plus className="w-4 h-4" />
               New
             </Link>
             
-            <button className="relative p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            <button className="relative rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-teal-500">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+              <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-amber-500"></span>
             </button>
 
-            {/* Divider */}
-            <div className="h-8 w-px bg-gray-200 hidden sm:block"></div>
+            <div className="hidden h-8 w-px bg-slate-200 sm:block"></div>
 
-            {/* Profile Avatar & Dropdown Wrapper */}
             <div className="relative">
-              {/* Avatar Button */}
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-1.5 pr-3 rounded-full border border-gray-200 hover:bg-gray-50 hover:shadow-sm transition-all duration-200"
+                className="flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1.5 pr-3 transition-all duration-200 hover:border-teal-200 hover:shadow-sm"
               >
-                {/* User Avatar */}
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-500 text-sm font-black text-white shadow-md shadow-teal-200">
                   J
                 </div>
-                {/* User Name (Hidden on very small screens) */}
-                <span className="text-sm font-semibold text-gray-700 hidden sm:block">John</span>
-                
-                {/* Chevron Down Icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
+                <span className="hidden text-sm font-bold text-slate-700 sm:block">John</span>
+                <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`} />
               </button>
 
-              {/* Dropdown Menu */}
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 origin-top-right animate-in fade-in slide-in-from-top-2">
-                  
-                  {/* User Info Header inside Dropdown */}
-                  <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-bold text-gray-900">John Doe</p>
-                    <p className="text-xs text-gray-500 truncate">john.doe@example.com</p>
+                <div className="absolute right-0 mt-2 w-64 origin-top-right rounded-lg border border-slate-200 bg-white py-2 shadow-2xl shadow-slate-200">
+                  <div className="border-b border-slate-100 px-4 py-3">
+                    <p className="text-sm font-black text-slate-950">John Doe</p>
+                    <p className="truncate text-xs font-medium text-slate-500">john.doe@example.com</p>
                   </div>
 
-                  {/* Menu Items */}
                   <div className="py-1">
                     <button 
-                      className="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                      className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-800"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                      </svg>
+                      <UserRound className="h-5 w-5" />
                       Profile Settings
                     </button>
 
                     <button 
-                      className="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                      className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-800"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-                      </svg>
+                      <Settings className="h-5 w-5" />
                       Add New Account
                     </button>
                   </div>
 
-                  {/* Log Out Divider & Button */}
-                  <div className="border-t border-gray-100 pt-1 mt-1">
+                  <div className="mt-1 border-t border-slate-100 pt-1">
                     <button 
-                      className="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                      className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-red-600 transition-colors hover:bg-red-50 hover:text-red-700"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                      </svg>
+                      <LogOut className="h-5 w-5" />
                       Log Out
                     </button>
                   </div>
@@ -129,7 +110,7 @@ export default function NavBar({ title = "Dashboard", subtitle = "Manage your wo
           </div>
         </div>
         {isMenuOpen && (
-          <div className="border-t border-gray-100 py-3 lg:hidden">
+          <div className="border-t border-slate-100 py-3 lg:hidden">
             <div className="grid gap-2">
               {mobileLinks.map((link) => (
                 <NavLink
@@ -137,10 +118,10 @@ export default function NavBar({ title = "Dashboard", subtitle = "Manage your wo
                   to={link.to}
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive }) =>
-                    `rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    `rounded-lg px-3 py-2 text-sm font-bold transition ${
                       isActive
-                        ? "bg-indigo-50 text-indigo-700"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        ? "bg-slate-950 text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
                     }`
                   }
                 >

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { BarChart3, FolderKanban, MessageSquareText, UserRound } from "lucide-react";
+import { BarChart3, FolderKanban, MessageSquareText, UserRound, Sparkles } from "lucide-react";
 
 export default function SideBar() {
   const navItems = [
@@ -26,32 +26,34 @@ export default function SideBar() {
   ];
 
   return (
-    <aside className="hidden lg:flex w-64 shrink-0 min-h-screen bg-white border-r border-gray-200 flex-col">
-      
-      {/* Logo / Brand Name Area */}
-      <div className="px-6 py-6 border-b border-gray-100">
-        <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-          BridgeSpace
-        </h1>
-        <p className="text-xs text-gray-400 mt-1 font-medium">Workspace</p>
+    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-900/10 bg-slate-950 text-white lg:flex">
+      <div className="border-b border-white/10 px-6 py-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-400 text-slate-950 shadow-lg shadow-teal-400/20">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black tracking-tight">BridgeSpace</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Workspace</p>
+          </div>
+        </div>
       </div>
 
-      {/* Navigation List */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <ul className="space-y-1">
+      <nav className="flex-1 overflow-y-auto px-4 py-5">
+        <ul className="space-y-2">
           {navItems.map((item) => (
             <li key={item.name}>
               <NavLink
                 to={item.to}
                 className={({ isActive }) =>
-                  `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  `flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-bold transition-all duration-200 ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-700 shadow-sm border-l-4 border-indigo-600"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-l-4 border-transparent"
+                      ? "bg-white text-slate-950 shadow-lg shadow-black/20"
+                      : "text-slate-300 hover:bg-white/10 hover:text-white"
                   }`
                 }
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="h-5 w-5" />
                 {item.name}
               </NavLink>
             </li>
@@ -59,14 +61,16 @@ export default function SideBar() {
         </ul>
       </nav>
 
-      {/* Bottom Decoration / Pro Upgrade Section (Optional but adds polish) */}
       <div className="p-4 mt-auto">
-        <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg">
-          <h3 className="font-bold text-sm">Upgrade to Pro</h3>
-          <p className="text-xs text-indigo-100 mt-1 mb-3">Get access to unlimited projects.</p>
-          <button className="w-full bg-white text-indigo-600 text-xs font-bold py-2 rounded-md hover:bg-indigo-50 transition shadow">
-            Learn More
-          </button>
+        <div className="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">Team capacity</p>
+          <div className="mt-3 flex items-end justify-between">
+            <span className="text-3xl font-black">84%</span>
+            <span className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-bold text-emerald-200">Healthy</span>
+          </div>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full w-[84%] rounded-full bg-teal-300" />
+          </div>
         </div>
       </div>
 

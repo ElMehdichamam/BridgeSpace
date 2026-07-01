@@ -4,17 +4,18 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Thread from './pages/Thread';
 import Project from './pages/Project';
+import Profile from './pages/Profile.jsx';
 
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/projects" element={<Project />} />
       <Route path="/threads" element={<Thread />} />
+      <Route path="/Profile" element={<Profile/>}/>
     </Routes>
   );
 }

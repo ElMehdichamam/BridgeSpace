@@ -1,62 +1,75 @@
 import { useState } from "react";
+import { Workflow, Menu, X } from "lucide-react";
 
 function Nav() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const links = ["Home", "Projects", "About us", "Contact us"];
+
   return (
     <>
-      {/* Main Container: Sticks to top, white background, subtle bottom shadow */}
-      <nav className="sticky top-0 z-50 bg-white shadow-sm">
-        {/* Inner Container: Centers content, adds horizontal padding, aligns items in a row */}
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          
-          {/* Logo / Brand Name */}
-          <p className="text-2xl font-bold tracking-tight text-indigo-600">
-            BridgeSpace
-          </p>
+      {/* Main container: sticky, dark, hairline bottom border instead of a shadow */}
+      <nav className="sticky top-0 z-50 bg-[#0B0D12]/90 backdrop-blur-sm border-b border-[#262B36]">
+        <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
+          {/* Logo */}
+          <a href="/" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-md bg-[#12151C] border border-[#262B36] flex items-center justify-center group-hover:border-[#7EE787]/40 transition-colors duration-150">
+              <Workflow className="w-4 h-4 text-[#7EE787]" />
+            </div>
+            <span className="font-mono text-[17px] font-semibold text-[#E6E8EB] tracking-tight">
+              bridgespace
+            </span>
+          </a>
 
-          {/* Desktop Links (Hidden on mobile, flex on medium screens and up) */}
+          {/* Desktop links */}
           <ul className="hidden md:flex items-center gap-8">
-            <li className="text-gray-700 font-medium hover:text-indigo-600 transition-colors duration-200 cursor-pointer">
-              Home
-            </li>
-            <li className="text-gray-700 font-medium hover:text-indigo-600 transition-colors duration-200 cursor-pointer">
-              Projects
-            </li>
-            <li className="text-gray-700 font-medium hover:text-indigo-600 transition-colors duration-200 cursor-pointer">
-              About Us
-            </li>
-            <li className="text-gray-700 font-medium hover:text-indigo-600 transition-colors duration-200 cursor-pointer">
-              Contact Us
-            </li>
+            {links.map((link) => (
+              <li key={link}>
+                <a
+                  href="#"
+                  className="text-sm font-medium text-[#A8AEBB] hover:text-[#E6E8EB] transition-colors duration-150"
+                >
+                  {link}
+                </a>
+              </li>
+            ))}
           </ul>
 
-          {/* Desktop Sign Up Button (Hidden on mobile) */}
-          <button className="hidden md:block bg-indigo-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors duration-200 cursor-pointer">
-            Sign Up
+          {/* Desktop CTA */}
+          <button className="hidden md:block bg-[#7EE787] text-[#0B0D12] font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-[#97F0A3] active:scale-[0.98] transition-all duration-150 cursor-pointer">
+            Sign up
           </button>
 
-          {/* Mobile Hamburger Button (Visible only on mobile) */}
-          <button 
-            className="md:hidden flex flex-col gap-1.5 p-2 cursor-pointer" 
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden p-2 text-[#E6E8EB] cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isOpen}
           >
-            <span className={`block w-6 h-0.5 bg-gray-700 transition-transform duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-gray-700 transition-opacity duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-gray-700 transition-transform duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile Menu Dropdown (Only renders when isOpen is true) */}
-        <div className={`md:hidden overflow-hidden transition-max-height duration-300 ease-in-out ${isOpen ? 'max-h-80' : 'max-h-0'}`}>
-          <ul className="flex flex-col items-center gap-4 pb-6 bg-white px-6">
-            <li className="text-gray-700 font-medium hover:text-indigo-600 cursor-pointer">Home</li>
-            <li className="text-gray-700 font-medium hover:text-indigo-600 cursor-pointer">Projects</li>
-            <li className="text-gray-700 font-medium hover:text-indigo-600 cursor-pointer">About Us</li>
-            <li className="text-gray-700 font-medium hover:text-indigo-600 cursor-pointer">Contact Us</li>
-            <button className="w-full max-w-xs bg-indigo-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors duration-200 cursor-pointer">
-              Sign Up
+        {/* Mobile menu */}
+        <div
+          className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out border-t border-[#262B36] ${
+            isOpen ? "max-h-80" : "max-h-0 border-t-0"
+          }`}
+        >
+          <ul className="flex flex-col items-center gap-1 py-5 bg-[#0B0D12] px-6">
+            {links.map((link) => (
+              <li key={link} className="w-full">
+                <a
+                  href="#"
+                  className="block text-center py-2.5 text-[#A8AEBB] hover:text-[#E6E8EB] font-medium transition-colors duration-150"
+                >
+                  {link}
+                </a>
+              </li>
+            ))}
+            <button className="w-full max-w-xs mt-2 bg-[#7EE787] text-[#0B0D12] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#97F0A3] active:scale-[0.98] transition-all duration-150 cursor-pointer">
+              Sign up
             </button>
           </ul>
         </div>
