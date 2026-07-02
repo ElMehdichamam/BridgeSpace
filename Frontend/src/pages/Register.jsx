@@ -1,177 +1,292 @@
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Mail, Lock, User, Building2, Workflow } from "lucide-react";
+import Nav from "../components/Nav";
+import { useAuth } from "../hooks/useAuth";
 
-function Register() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPass] = useState("");
-  const [role, setRole] = useState("");
-  const [department, setDepartment] = useState("");
-  const [organization, setOrganization] = useState("");
-  
+const DEPARTMENTS = ["Dev", "Finance", "Sales", "Support", "Other"];
+
+export default function Register() {
+  const navigate = useNavigate();
+  const { register: authRegister } = useAuth();
+  const [form, setForm] = useState({
+    email: "",
+    name: "",
+    password: "",
+    organization: "",
+    role: "",
+    department: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function validateInputs() {
-    if (!email || !name || !password || !role || !department || !organization) {
-      console.log("All fields required");
-      return false;
-    }
-    return true;
+  function update(field) {
+    return (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (!validateInputs()) return;
+    if (!form.email || !form.name || !form.password || !form.role || !form.department || !form.organization) return;
+    try {
+      setError("");
+      setLoading(true);
+      await authRegister({
+        username: form.name,
+        email: form.email,
+        password: form.password,
+        role: form.role,
+        department: form.department,
+        organization: form.organization,
+      });
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div className="min-h-screen bg-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      
-      {/* Card Wrapper - Styling moved here from the form */}
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-        
-        <form onSubmit={handleSubmit}>
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">Create Account</h2>
+    <>
+      <Nav />
+      <div className="flex min-h-screen bg-[var(--bg-base)]">
+        {/* Left panel */}
+        <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 xl:p-14 overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-[0.06] pointer-events-none"
+            style={{
+              backgroundImage: "radial-gradient(#F0A868 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
+            }}
+          />
+          <div className="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-[var(--amber-subtle)] blur-3xl" />
+          <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-[var(--accent-subtle)] blur-3xl" />
 
-          {/* Email Field */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200" 
-              placeholder="you@example.com"
-            />
+          <div className="relative z-10 flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--bg-panel)]">
+              <Workflow className="h-4 w-4 text-[var(--accent)]" />
+            </div>
+            <span className="font-mono text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">
+              bridgespace
+            </span>
           </div>
 
-          {/* Name Field */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input 
-              type="text" 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              required 
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200" 
-              placeholder="John Doe"
-            />
+          <div className="relative z-10 max-w-md">
+            <h2 className="mb-3 text-3xl font-bold leading-tight tracking-tight text-[var(--text-primary)] xl:text-[2.25rem]" style={{ fontFamily: "var(--font-sans)" }}>
+              Bridge the gap
+              <br />
+              between teams.
+            </h2>
+            <p className="mb-8 text-[15px] leading-relaxed text-[var(--text-muted)]">
+              Join engineering, product, design, finance, and sales in one shared workspace.
+            </p>
+
+            <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-panel)]/80 p-5 font-mono text-[13px] leading-6 backdrop-blur-sm">
+              <div className="flex items-center gap-2 text-[var(--accent)]">
+                <span className="text-[var(--amber)]">$</span>
+                <span>bridgespace join --org {form.organization || "your-org"}</span>
+              </div>
+              <div className="mt-2 flex items-center gap-2 text-[var(--text-muted)]">
+                <span className="text-[var(--accent)]">✓</span>
+                <span>invite sent to {form.email || "you@company.com"}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                <span className="text-[var(--accent)]">✓</span>
+                <span>workspace ready for {form.name || "your team"}</span>
+              </div>
+            </div>
           </div>
 
-          {/* Password Field with Toggle */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"} 
-                value={password} 
-                onChange={(e) => setPass(e.target.value)} 
-                required 
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 pr-12" 
-                placeholder="••••••••"
-              />
-              <button 
-                type="button" 
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 transition"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+          <div className="relative z-10 text-xs font-mono text-[var(--text-dim)]">
+            bridgespace &copy; 2024
+          </div>
+        </div>
+
+        {/* Right panel */}
+        <div className="flex w-full min-h-screen flex-col justify-center bg-[var(--bg-panel)] px-4 py-10 sm:px-6 md:py-12 lg:w-1/2 lg:min-h-0 lg:px-12 xl:px-20 2xl:px-24">
+          <div className="lg:hidden mb-8 flex items-center justify-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--bg-panel)]">
+              <Workflow className="h-4 w-4 text-[var(--accent)]" />
+            </div>
+            <span className="font-mono text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">
+              bridgespace
+            </span>
+          </div>
+
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-8 sm:mb-10">
+              <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-[1.75rem]" style={{ fontFamily: "var(--font-sans)" }}>
+                Create your workspace
+              </h1>
+              <p className="mt-2 text-sm text-[var(--text-muted)] sm:text-base">
+                Get your team on the same page.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="mb-1.5 block text-xs font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Mail className="h-[17px] w-[17px] text-[var(--text-dim)]" />
+                  </div>
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={update("email")}
+                    required
+                    placeholder="you@company.com"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder-[#4B5163] transition duration-150 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] sm:py-3.5 sm:text-base"
+                  />
+                </div>
+              </div>
+
+              {/* Name */}
+              <div>
+                <label className="mb-1.5 block text-xs font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
+                  Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <User className="h-[17px] w-[17px] text-[var(--text-dim)]" />
+                  </div>
+                  <input
+                    type="text"
+                    value={form.name}
+                    onChange={update("name")}
+                    required
+                    placeholder="Jane Doe"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder-[#4B5163] transition duration-150 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] sm:py-3.5 sm:text-base"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="mb-1.5 block text-xs font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Lock className="h-[17px] w-[17px] text-[var(--text-dim)]" />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
+                    onChange={update("password")}
+                    required
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] py-3 pl-10 pr-11 text-sm text-[var(--text-primary)] placeholder-[#4B5163] transition duration-150 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] sm:py-3.5 sm:text-base"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] transition duration-150 hover:text-[var(--text-primary)] focus:text-[var(--accent)] focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="h-[17px] w-[17px]" /> : <Eye className="h-[17px] w-[17px]" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Organization */}
+              <div>
+                <label className="mb-1.5 block text-xs font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
+                  Organization
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Building2 className="h-[17px] w-[17px] text-[var(--text-dim)]" />
+                  </div>
+                  <input
+                    type="text"
+                    value={form.organization}
+                    onChange={update("organization")}
+                    required
+                    placeholder="Acme Inc."
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder-[#4B5163] transition duration-150 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] sm:py-3.5 sm:text-base"
+                  />
+                </div>
+              </div>
+
+              {/* Role */}
+              <div>
+                <label className="mb-2 block text-xs font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
+                  Role
+                </label>
+                <div className="flex items-center gap-6">
+                  {["admin", "member"].map((r) => (
+                    <label key={r} className="flex cursor-pointer items-center gap-2 group">
+                      <input
+                        type="radio"
+                        name="role"
+                        value={r}
+                        checked={form.role === r}
+                        onChange={update("role")}
+                        className="h-4 w-4 border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--accent)] focus:ring-[var(--accent-ring)] focus:ring-offset-0"
+                      />
+                      <span className="text-sm font-medium capitalize text-[var(--text-muted)] transition group-hover:text-[var(--text-primary)]">
+                        {r}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Department */}
+              <div>
+                <label className="mb-1.5 block text-xs font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
+                  Department
+                </label>
+                <select
+                  value={form.department}
+                  onChange={update("department")}
+                  required
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-4 py-3 text-sm text-[var(--text-primary)] transition duration-150 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] sm:py-3.5 sm:text-base"
+                >
+                  <option value="" disabled>Select a department</option>
+                  {DEPARTMENTS.map((d) => (
+                    <option key={d} value={d.toLowerCase()}>{d}</option>
+                  ))}
+                </select>
+              </div>
+
+              {error && (
+                <p className="rounded-lg border border-[var(--danger)]/30 bg-[var(--danger)]/10 px-4 py-2.5 text-sm text-[var(--danger)]">
+                  {error}
+                </p>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#7EE787] px-4 py-3 text-sm font-semibold text-[var(--bg-base)] transition-all duration-200 hover:bg-[var(--accent-hover)] focus:outline-none focus:ring-2 focus:ring-[#7EE787] focus:ring-offset-2 focus:ring-offset-[var(--bg-panel)] active:scale-[0.98] disabled:opacity-60 sm:py-3.5 sm:text-base"
               >
-                {!showPassword ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                  </svg>
-                )}
+                {loading ? "Creating..." : "Create workspace"}
               </button>
-            </div>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-[var(--text-muted)]">
+              Already have an account?{" "}
+              <Link to="/" className="font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent-hover)]">
+                Sign in
+              </Link>
+            </p>
+
+            <p className="mt-6 text-center text-xs text-[var(--text-dim)]">
+              By creating an account you agree to our{" "}
+              <a href="#" className="font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]">Terms</a>{" "}
+              &{" "}
+              <a href="#" className="font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]">Privacy Policy</a>
+            </p>
           </div>
-
-          {/* Organization Field */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
-            <input 
-              type="text" 
-              value={organization} 
-              onChange={e => setOrganization(e.target.value)} 
-              required 
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200" 
-              placeholder="Acme Inc."
-            />
-          </div>
-
-          {/* Role Radio Buttons */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <div className="flex items-center space-x-6">
-              <label className="flex items-center cursor-pointer group">
-                <input 
-                  type="radio" 
-                  name="role"  
-                  value='admin' 
-                  onChange={(e) => setRole(e.target.value)} 
-                  className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" 
-                />
-                <span className="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition">Admin</span>
-              </label>
-              <label className="flex items-center cursor-pointer group">
-                <input 
-                  type="radio" 
-                  name="role" 
-                  value='member' 
-                  onChange={(e) => setRole(e.target.value)} 
-                  className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" 
-                />
-                <span className="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition">Member</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Department Select */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-            <select 
-              value={department} 
-              onChange={(e) => setDepartment(e.target.value)}
-              required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
-            >
-              <option value="" disabled>Select a department</option>
-              <option value="dev">Dev</option>
-              <option value="finance">Finance</option>
-              <option value="sales">Sales</option>
-              <option value="support">Support</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          {/* Submit Button */}
-          <Link 
-            to="/dashboard" 
-            className="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 transition duration-200 ease-in-out transform hover:scale-[1.02] active:scale-95"
-          >
-            Register
-          </Link>
-        </form>
-
-        {/* Login Link - Placed outside the form to avoid triggering validation errors when clicked */}
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link 
-            to="/login" 
-            className="font-semibold text-indigo-600 hover:text-indigo-500 transition duration-200"
-          >
-            Login here
-          </Link>
-        </p>
-
+        </div>
       </div>
-    </div>
+    </>
   );
 }
-
-export default Register;

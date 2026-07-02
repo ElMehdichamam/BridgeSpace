@@ -342,7 +342,8 @@ import {
   EyeOff,
 } from "lucide-react";
 import Nav from "../components/Nav";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 // ─── Design tokens ──────────────────────────────────────────────────
 // bg-base   #0B0D12   near-black navy, the app shell
@@ -370,15 +371,15 @@ function Toast({ message, type, onRemove }) {
   }, [handleClose]);
 
   const cfg = {
-    success: { border: "border-l-[#7EE787]", icon: CheckCircle2, iconColor: "text-[#7EE787]" },
-    error: { border: "border-l-[#F87171]", icon: AlertCircle, iconColor: "text-[#F87171]" },
-    info: { border: "border-l-[#7DA9F0]", icon: Info, iconColor: "text-[#7DA9F0]" },
+    success: { border: "border-l-[#7EE787]", icon: CheckCircle2, iconColor: "text-[var(--accent)]" },
+    error: { border: "border-l-[#F87171]", icon: AlertCircle, iconColor: "text-[var(--danger)]" },
+    info: { border: "border-l-[#7DA9F0]", icon: Info, iconColor: "text-[var(--info)]" },
   }[type];
   const Icon = cfg.icon;
 
   return (
     <div
-      className={`flex items-center gap-2.5 pl-3.5 pr-4 py-3 rounded-md border border-[#262B36] ${cfg.border} border-l-2 bg-[#12151C] text-[#E6E8EB] text-sm font-mono shadow-xl shadow-black/40 ${
+      className={`flex items-center gap-2.5 pl-3.5 pr-4 py-3 rounded-md border border-[var(--border)] ${cfg.border} border-l-2 bg-[var(--bg-panel)] text-[var(--text-primary)] text-sm font-mono shadow-xl shadow-black/20 ${
         exiting ? "animate-[toastOut_.25s_ease-in_forwards]" : "animate-[toastIn_.35s_cubic-bezier(0.16,1,0.3,1)_forwards]"
       }`}
     >
@@ -437,6 +438,7 @@ function HandshakeLog() {
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(HANDSHAKE_LINES.length);
       return;
     }
@@ -458,13 +460,13 @@ function HandshakeLog() {
   }, []);
 
   return (
-    <div className="rounded-lg border border-[#262B36] bg-[#0E1016]/80 backdrop-blur-sm overflow-hidden">
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-panel)]/80 backdrop-blur-sm overflow-hidden">
       {/* window chrome */}
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#262B36] bg-[#12151C]">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#F87171]/70" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#F0A868]/70" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#7EE787]/70" />
-        <span className="ml-2 text-xs font-mono text-[#7A8194] tracking-wide">
+      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--border)] bg-[var(--bg-panel)]">
+        <span className="w-2.5 h-2.5 rounded-full bg-[var(--danger)]/70" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[var(--amber)]/70" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]/70" />
+        <span className="ml-2 text-xs font-mono text-[var(--text-muted)] tracking-wide">
           session
         </span>
       </div>
@@ -474,17 +476,17 @@ function HandshakeLog() {
           <div key={i} className="flex items-baseline gap-2">
             {line.type === "cmd" ? (
               <>
-                <span className="text-[#F0A868]">$</span>
-                <span className="text-[#E6E8EB]">{line.text}</span>
+                <span className="text-[var(--amber)]">$</span>
+                <span className="text-[var(--text-primary)]">{line.text}</span>
               </>
             ) : line.type === "info" ? (
-              <span className="text-[#7A8194] pl-4">{line.text}</span>
+              <span className="text-[var(--text-muted)] pl-4">{line.text}</span>
             ) : (
               <span className="pl-4 flex items-baseline gap-2">
-                <span className={line.type === "you" ? "text-[#F0A868]" : "text-[#7EE787]"}>
+                <span className={line.type === "you" ? "text-[var(--amber)]" : "text-[var(--accent)]"}>
                   ✓
                 </span>
-                <span className={line.type === "you" ? "text-[#F0A868]" : "text-[#A8AEBB]"}>
+                <span className={line.type === "you" ? "text-[var(--amber)]" : "text-[var(--text-secondary)]"}>
                   {line.text}
                 </span>
               </span>
@@ -492,7 +494,7 @@ function HandshakeLog() {
           </div>
         ))}
         <span
-          className="inline-block w-[7px] h-[15px] bg-[#7EE787] align-middle ml-[2px]"
+          className="inline-block w-[7px] h-[15px] bg-[var(--accent)] align-middle ml-[2px]"
           style={{ animation: "cursorBlink 1s step-end infinite" }}
         />
       </div>
@@ -502,6 +504,8 @@ function HandshakeLog() {
 
 // ─── Main Login Component ───────────────────────────────────────────
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -521,27 +525,24 @@ export default function LoginPage() {
     async (e) => {
       e.preventDefault();
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 1500));
-      setLoading(false);
-      addToast(`Signed in as ${email}`, "success");
+      try {
+        await login({ email, password });
+        navigate("/dashboard");
+      } catch (err) {
+        const msg = err.response?.data?.message || "Login failed";
+        addToast(msg, "error");
+      } finally {
+        setLoading(false);
+      }
     },
-    [email, addToast]
+    [email, password, login, navigate, addToast]
   );
 
   return (
     <>
-      <style>{`
-        @keyframes cursorBlink { 0%, 45% { opacity: 1; } 50%, 100% { opacity: 0; } }
-        @keyframes toastIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(16px); } }
-        @media (prefers-reduced-motion: reduce) {
-          * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
-        }
-      `}</style>
-
       <Nav />
 
-      <div className="flex flex-col lg:flex-row min-h-screen bg-[#0B0D12]">
+      <div className="flex flex-col lg:flex-row min-h-screen bg-[var(--bg-base)]">
         {/* ── Left panel ─────────────────────────────────────── */}
         <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 xl:p-14 overflow-hidden">
           {/* subtle dot grid */}
@@ -552,53 +553,53 @@ export default function LoginPage() {
               backgroundSize: "24px 24px",
             }}
           />
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-[#7EE787]/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-16 w-72 h-72 bg-[#F0A868]/10 rounded-full blur-3xl" />
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-[var(--accent-subtle)] rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -left-16 w-72 h-72 bg-[var(--amber-subtle)] rounded-full blur-3xl" />
 
           <div className="relative z-10 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#12151C] border border-[#262B36] flex items-center justify-center">
-              <Workflow className="w-4 h-4 text-[#7EE787]" />
+            <div className="w-8 h-8 rounded-md bg-[var(--bg-panel)] border border-[var(--border)] flex items-center justify-center">
+              <Workflow className="w-4 h-4 text-[var(--accent)]" />
             </div>
-            <span className="font-mono text-[15px] font-semibold text-[#E6E8EB] tracking-tight">
+            <span className="font-mono text-[15px] font-semibold text-[var(--text-primary)] tracking-tight">
               bridgespace
             </span>
           </div>
 
           <div className="relative z-10 max-w-md">
-            <h2 className="text-3xl xl:text-[2.25rem] font-mono font-bold leading-tight text-[#E6E8EB] mb-3 tracking-tight">
+            <h2 className="text-3xl xl:text-[2.25rem] font-mono font-bold leading-tight text-[var(--text-primary)] mb-3 tracking-tight">
               Where specs turn into
               <br />
               shipped work.
             </h2>
-            <p className="text-[#7A8194] text-[15px] mb-8 leading-relaxed">
+            <p className="text-[var(--text-muted)] text-[15px] mb-8 leading-relaxed">
               One workspace for the people who write the ticket and the people who close it.
             </p>
             <HandshakeLog />
           </div>
 
-          <div className="relative z-10 text-xs font-mono text-[#4B5163]">
+          <div className="relative z-10 text-xs font-mono text-[var(--text-dim)]">
             bridgespace © 2024
           </div>
         </div>
 
         {/* ── Right panel ────────────────────────────────────── */}
-        <div className="flex flex-col justify-center w-full lg:w-1/2 py-10 px-4 sm:px-6 md:py-12 lg:px-12 xl:px-20 2xl:px-24 min-h-screen lg:min-h-0 bg-[#0F1116]">
+        <div className="flex flex-col justify-center w-full lg:w-1/2 py-10 px-4 sm:px-6 md:py-12 lg:px-12 xl:px-20 2xl:px-24 min-h-screen lg:min-h-0 bg-[var(--bg-panel)]">
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 flex items-center justify-center gap-2.5">
-            <div className="w-8 h-8 rounded-md bg-[#12151C] border border-[#262B36] flex items-center justify-center">
-              <Workflow className="w-4 h-4 text-[#7EE787]" />
+            <div className="w-8 h-8 rounded-md bg-[var(--bg-panel)] border border-[var(--border)] flex items-center justify-center">
+              <Workflow className="w-4 h-4 text-[var(--accent)]" />
             </div>
-            <span className="font-mono text-[15px] font-semibold text-[#E6E8EB] tracking-tight">
+            <span className="font-mono text-[15px] font-semibold text-[var(--text-primary)] tracking-tight">
               bridgespace
             </span>
           </div>
 
           <div className="mx-auto w-full max-w-md">
             <div className="mb-8 sm:mb-10">
-              <h1 className="text-2xl sm:text-[1.75rem] font-mono font-bold text-[#E6E8EB] tracking-tight">
+              <h1 className="text-2xl sm:text-[1.75rem] font-mono font-bold text-[var(--text-primary)] tracking-tight">
                 Welcome back
               </h1>
-              <p className="mt-2 text-sm sm:text-base text-[#7A8194]">
+              <p className="mt-2 text-sm sm:text-base text-[var(--text-muted)]">
                 Sign in to pick up where your team left off.
               </p>
             </div>
@@ -608,13 +609,13 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-mono font-medium text-[#7A8194] uppercase tracking-wider mb-2"
+                  className="block text-xs font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2"
                 >
                   Email
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Mail className="w-[17px] h-[17px] text-[#4B5163]" />
+                    <Mail className="w-[17px] h-[17px] text-[var(--text-dim)]" />
                   </div>
                   <input
                     type="email"
@@ -623,7 +624,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-10 pr-4 py-3 sm:py-3.5 bg-[#171B24] border border-[#262B36] rounded-lg text-[#E6E8EB] placeholder-[#4B5163] text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#7EE787]/40 focus:border-[#7EE787]/60 transition duration-150"
+                    className="w-full pl-10 pr-4 py-3 sm:py-3.5 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] placeholder-[#4B5163] text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:border-[var(--accent)] transition duration-150"
                   />
                 </div>
               </div>
@@ -632,13 +633,13 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-xs font-mono font-medium text-[#7A8194] uppercase tracking-wider mb-2"
+                  className="block text-xs font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2"
                 >
                   Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Lock className="w-[17px] h-[17px] text-[#4B5163]" />
+                    <Lock className="w-[17px] h-[17px] text-[var(--text-dim)]" />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -647,13 +648,13 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pl-10 pr-11 py-3 sm:py-3.5 bg-[#171B24] border border-[#262B36] rounded-lg text-[#E6E8EB] placeholder-[#4B5163] text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#7EE787]/40 focus:border-[#7EE787]/60 transition duration-150"
+                    className="w-full pl-10 pr-11 py-3 sm:py-3.5 bg-[var(--bg-elevated)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] placeholder-[#4B5163] text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--border-focus)] focus:border-[var(--accent)] transition duration-150"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A8194] hover:text-[#E6E8EB] focus:outline-none focus:text-[#7EE787] transition duration-150 p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] focus:outline-none focus:text-[var(--accent)] transition duration-150 p-1"
                   >
                     {showPassword ? <EyeOff className="w-[17px] h-[17px]" /> : <Eye className="w-[17px] h-[17px]" />}
                   </button>
@@ -662,15 +663,15 @@ export default function LoginPage() {
 
               {/* Links row */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 pt-1">
-                <p className="text-sm text-[#7A8194]">
+                <p className="text-sm text-[var(--text-muted)]">
                   No account?{" "}
-                  <Link to="/register" className="font-medium text-[#7EE787] hover:text-[#97F0A3] transition-colors">
+                  <Link to="/register" className="font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors">
                     Register
                   </Link>
                 </p>
                 <a
                   href="#"
-                  className="text-sm font-medium text-[#7A8194] hover:text-[#E6E8EB] transition-colors sm:ml-auto"
+                  className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors sm:ml-auto"
                 >
                   Forgot password?
                 </a>
@@ -680,7 +681,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 rounded-lg text-sm sm:text-base font-semibold text-[#0B0D12] bg-[#7EE787] hover:bg-[#97F0A3] disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0F1116] focus:ring-[#7EE787] transition-all duration-200 mt-2"
+                className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 rounded-lg text-sm sm:text-base font-semibold text-[var(--bg-base)] bg-[#7EE787] hover:bg-[var(--accent-hover)] disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-panel)] focus:ring-[#7EE787] transition-all duration-200 mt-2"
               >
                 {loading ? (
                   <>
@@ -697,25 +698,25 @@ export default function LoginPage() {
 
               {/* Divider */}
               <div className="relative flex items-center gap-4 py-1">
-                <div className="flex-1 h-px bg-[#262B36]" />
-                <span className="text-xs font-mono text-[#4B5163] uppercase tracking-wider whitespace-nowrap">
+                <div className="flex-1 h-px bg-[var(--border)]" />
+                <span className="text-xs font-mono text-[var(--text-dim)] uppercase tracking-wider whitespace-nowrap">
                   or continue with
                 </span>
-                <div className="flex-1 h-px bg-[#262B36]" />
+                <div className="flex-1 h-px bg-[var(--border)]" />
               </div>
 
               {/* Social buttons */}
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-lg border border-[#262B36] bg-[#171B24] text-[#E6E8EB] text-sm font-medium hover:bg-[#1D2129] hover:border-[#333A48] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#262B36] transition-all duration-150"
+                  className="flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm font-medium hover:bg-[var(--bg-hover)] hover:border-[var(--border-hover)] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#262B36] transition-all duration-150"
                 >
                   <GoogleIcon />
                   <span>Google</span>
                 </button>
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-lg border border-[#262B36] bg-[#171B24] text-[#E6E8EB] text-sm font-medium hover:bg-[#1D2129] hover:border-[#333A48] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#262B36] transition-all duration-150"
+                  className="flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm font-medium hover:bg-[var(--bg-hover)] hover:border-[var(--border-hover)] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#262B36] transition-all duration-150"
                 >
                   <GitHubIcon />
                   <span>GitHub</span>
@@ -723,13 +724,13 @@ export default function LoginPage() {
               </div>
             </form>
 
-            <p className="mt-8 sm:mt-10 text-center text-xs text-[#4B5163]">
+            <p className="mt-8 sm:mt-10 text-center text-xs text-[var(--text-dim)]">
               By signing in you agree to our{" "}
-              <a href="#" className="text-[#7A8194] hover:text-[#E6E8EB] font-medium transition-colors">
+              <a href="#" className="text-[var(--text-muted)] hover:text-[var(--text-primary)] font-medium transition-colors">
                 Terms
               </a>{" "}
               &{" "}
-              <a href="#" className="text-[#7A8194] hover:text-[#E6E8EB] font-medium transition-colors">
+              <a href="#" className="text-[var(--text-muted)] hover:text-[var(--text-primary)] font-medium transition-colors">
                 Privacy Policy
               </a>
             </p>

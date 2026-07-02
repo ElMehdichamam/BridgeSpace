@@ -9,14 +9,14 @@ function Nav() {
   return (
     <>
       {/* Main container: sticky, dark, hairline bottom border instead of a shadow */}
-      <nav className="sticky top-0 z-50 bg-[#0B0D12]/90 backdrop-blur-sm border-b border-[#262B36]">
+      <nav className="sticky top-0 z-50 bg-[var(--bg-base)]/90 backdrop-blur-sm border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-md bg-[#12151C] border border-[#262B36] flex items-center justify-center group-hover:border-[#7EE787]/40 transition-colors duration-150">
-              <Workflow className="w-4 h-4 text-[#7EE787]" />
+            <div className="w-8 h-8 rounded-md bg-[var(--bg-panel)] border border-[var(--border)] flex items-center justify-center group-hover:border-[var(--accent-ring)] transition-colors duration-150">
+              <Workflow className="w-4 h-4 text-[var(--accent)]" />
             </div>
-            <span className="font-mono text-[17px] font-semibold text-[#E6E8EB] tracking-tight">
+            <span className="font-mono text-[17px] font-semibold text-[var(--text-primary)] tracking-tight">
               bridgespace
             </span>
           </a>
@@ -27,7 +27,7 @@ function Nav() {
               <li key={link}>
                 <a
                   href="#"
-                  className="text-sm font-medium text-[#A8AEBB] hover:text-[#E6E8EB] transition-colors duration-150"
+                  className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150"
                 >
                   {link}
                 </a>
@@ -36,13 +36,13 @@ function Nav() {
           </ul>
 
           {/* Desktop CTA */}
-          <button className="hidden md:block bg-[#7EE787] text-[#0B0D12] font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-[#97F0A3] active:scale-[0.98] transition-all duration-150 cursor-pointer">
+          <button className="hidden md:block bg-[#7EE787] text-[var(--bg-base)] font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-[var(--accent-hover)] active:scale-[0.98] transition-all duration-150 cursor-pointer">
             Sign up
           </button>
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-2 text-[#E6E8EB] cursor-pointer"
+            className="md:hidden p-2 text-[var(--text-primary)] cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
             aria-expanded={isOpen}
@@ -53,22 +53,22 @@ function Nav() {
 
         {/* Mobile menu */}
         <div
-          className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out border-t border-[#262B36] ${
+          className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out border-t border-[var(--border)] ${
             isOpen ? "max-h-80" : "max-h-0 border-t-0"
           }`}
         >
-          <ul className="flex flex-col items-center gap-1 py-5 bg-[#0B0D12] px-6">
+          <ul className="flex flex-col items-center gap-1 py-5 bg-[var(--bg-base)] px-6">
             {links.map((link) => (
               <li key={link} className="w-full">
                 <a
                   href="#"
-                  className="block text-center py-2.5 text-[#A8AEBB] hover:text-[#E6E8EB] font-medium transition-colors duration-150"
+                  className="block text-center py-2.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium transition-colors duration-150"
                 >
                   {link}
                 </a>
               </li>
             ))}
-            <button className="w-full max-w-xs mt-2 bg-[#7EE787] text-[#0B0D12] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#97F0A3] active:scale-[0.98] transition-all duration-150 cursor-pointer">
+            <button className="w-full max-w-xs mt-2 bg-[#7EE787] text-[var(--bg-base)] font-semibold px-5 py-2.5 rounded-lg hover:bg-[var(--accent-hover)] active:scale-[0.98] transition-all duration-150 cursor-pointer">
               Sign up
             </button>
           </ul>
