@@ -1,15 +1,16 @@
 const Project = require("../models/Project");
 const createProject = async (req,res) =>{
     try {
-    const {name ,description , organization ,deadline} = req.body;
+    const {name ,description , organization ,deadline, status} = req.body;
     const admin = req.user._id;
     const project = await Project.create({
             name,
             description,
             organization,
             deadline,
-            admin,        
-            members: [admin]  
+            status,
+            admin,
+            members: [admin]
         });
 
         return res.status(201).json({

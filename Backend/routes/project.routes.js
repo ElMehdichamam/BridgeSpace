@@ -18,8 +18,8 @@ const  {
         removeMember
         } = require("../controllers/project.controller");
 
-router.get('/',verifyToken,validateMiddleware(projectSchema),getAllProjects);
-router.get('/:id',verifyToken,validateMiddleware(projectSchema),getProjectById);
+router.get('/',verifyToken,getAllProjects);
+router.get('/:id',verifyToken,getProjectById);
 router.post('/',verifyToken,validateMiddleware(projectSchema),createProject);
 router.put('/:id',verifyToken,validateMiddleware(projectSchema),updateProject);
 router.delete('/:id',verifyToken,validateMiddleware(projectSchema),removeProject);

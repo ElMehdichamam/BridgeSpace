@@ -22,6 +22,7 @@ app.use("/api/organizations", require("./routes/organization.routes"));
 app.use("/api/projects", require("./routes/project.routes"));
 app.use("/api/threads", require("./routes/thread.routes"));
 app.use("/api/messages", require("./routes/message.routes"));
+app.use("/api/users", require("./routes/user.routes"));
 
 // Health check
 app.get("/", (req, res) => {
