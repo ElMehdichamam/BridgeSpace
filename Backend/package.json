@@ -18,8 +18,5 @@
   "scripts": {
   "start": "node index.js", 
   "dev": "nodemon index.js"   
-},
-"engines": {
-  "node": "26.x"
 }
 }
