@@ -1,3 +1,4 @@
+that dockerignore
 .env
 node_modules
 .git
